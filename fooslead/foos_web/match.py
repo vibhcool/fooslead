@@ -1,5 +1,5 @@
 
-class match:
+class Match:
 
     max_score = 5
 
@@ -12,7 +12,7 @@ class match:
         self.team_b_score = 0
         self.max_score = max_score
         
-    def win_point(self, team)
+    def win_point(self, team):
         if team is team_a:
             self.team_a_score += 1
         else:
