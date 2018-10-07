@@ -19,6 +19,7 @@ def start_game(request):
         if response['match'] is not None:
             response['status'] = True
         print(team_a, team_b, response['match'])
+    print(response)
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 def end_game(request):
@@ -43,14 +44,39 @@ def add_point(request):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 def create_team(request):
+    error = None
     if request.method == 'POST':
         team_form = TeamForm(request.POST)
+
         if team_form.is_valid():
-            Team(member_a=team_form.cleaned_data.get('member_a'),
-                member_b=team_form.cleaned_data.get('member_b'),
-                team_name=team_form.cleaned_data.get('team')
-            ).save()
-    return redirect('/rankings/')
+            error_reason = check_team_exists(team_form)
+            print(error_reason)
+            if error_reason is None:
+                Team(member_a=team_form.cleaned_data.get('member_a'),
+                    member_b=team_form.cleaned_data.get('member_b'),
+                    team_name=team_form.cleaned_data.get('team')
+                ).save()
+            else:
+                if error_reason == 'team':
+                    error = {'error': 'Team with same name exists'}
+                else:
+                    error = {'error': 'team with same names exist'}
+    top_teams = leaderboard.show_ranking(limit=10)
+    print(error)
+    return redirect('/rankings/', error_show=error)
+
+def check_team_exists(team_form):
+    member_a = team_form.cleaned_data.get('member_a')
+    member_b = team_form.cleaned_data.get('member_b')
+    team = team_form.cleaned_data.get('team')
+    print(type(Team.objects.filter(team_name=team).count()), team, Team.objects.filter(team_name=team).count() > 0)
+    if Team.objects.filter(team_name=team).count() > 0:
+        print('yoyo')
+        return team
+    elif Team.objects.filter(member_a=member_a, member_b=member_b).count() > 0:
+        return 'members'
+    else:
+        return None
 
 def get_leaderboard(request):
     top_teams = leaderboard.show_ranking(limit=10)

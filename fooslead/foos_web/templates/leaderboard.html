@@ -10,6 +10,11 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <script>
       var create_team_screen = document.getElementById('create-team');
+      {% if error_show is not None%}
+        $(document).ready(function(){
+          alert("{{ error_show.error }}");
+        });
+      {%endif %}
       window.onclick = function(event) {
         if (event.target == modal) {
             create_team_screen.style.display = "none";
@@ -186,18 +191,18 @@
 <style>
 
 ::placeholder {
-    color: red;
+    color: #f1f1f1;
 }
 
 body
 /* Full-width input fields */
-input[type=text], input[type=password] {
+input[type=text] {
     width: 100%;
     padding: 15px;
     margin: 5px 0 22px 0;
     display: inline-block;
     border: none;
-    background: #f1f1f1;
+    color: red;
 }
 
 /* Add a background color when the inputs get focus */
@@ -348,7 +353,7 @@ hr {
     </svg>
     
   <div id="create-team" class="modal" style="background:#071a47">
-    <span onclick="document.getElementById('create-team').style.display='none'; document.getElementById('leaderboard').style.display='block'" class="close" title="Close Modal">&times;</span>
+    <span onclick="document.getElementById('create-team').style.display='none'; document.getElementById('leaderboard').style.display='block';  window.location.reload()" class="close" title="Close Modal">&times;</span>
     <form class="modal-content" action="{% url 'foos_web:create-team' %}" method="POST">
       <div class="container" style="background:#c0c0c0">
         <center><b>Create team<b></center>
@@ -358,7 +363,7 @@ hr {
 	            <input class="col-sm-4" type="text" name="member_b" placeholder="Name of member 2" style="background:#c0c0c0">
 
         <div class="clearfix">
-          <button type="button" onclick="document.getElementById('create-team').style.display='none'" class="cancelbtn">Cancel</button>
+          <button type="button" onclick="document.getElementById('create-team').style.display='none'; document.getElementById('leaderboard').style.display='block'; " class="cancelbtn">Cancel</button>
           <button type="submit" class="signupbtn">Create Team</button>
         </div>
       </div>
@@ -379,17 +384,20 @@ hr {
 	        <input type="hidden" id="match_id" value="-1">
         </div>
         <div class="clearfix" id="show_start_scores" style="display:none;">
-          <label id="score_a_label" value="0" style="background:#c0c0c0">0</label>
-	        <label id="score_b_label" value="0" style="background:#c0c0c0">0</label>
+          <center>
+            <label id="score_a_label" value="0" style="background:#c0c0c0;font-size:10em;">0</label>
+	        <label style="background:#c0c0c0;font-size:10em;"> :</label>
+	        <label id="score_b_label" value="0" style="background:#c0c0c0;font-size:10em;">0</label>
+	      </center>
         </div>
         <div class="clearfix" id="input_start_scores" style="display:none;">
           <button type="button" class="signupbtn" id="team_a_score" onclick="addPoint(this)">Add point to team</button>          
           <button type="button" class="signupbtn" id="team_b_score" onclick="addPoint(this)">Add point to team</button>
         </div>
-        <div class="row clearfix">
-          <button type="button" onclick="endGame()" class="col-sm-4 cancelbtn">End Game</button>
-          <button type="button" id="start_game" style="display:block;" class="col-sm-4 signupbtn" onclick="startGame()">Start</button>
-          <button type="button" class="col-sm-4 extrabtn" onclick="buttonsReset()">Reset</button>
+        <div class="row clearfix" style="align-items: center;">
+          <button type="button" onclick="endGame()" id="end_game" class="col-md-4 btn-sx cancelbtn" style="display:none;">End Game</button>
+          <button type="button" id="start_game" style="display:block;" class="col-md-4 btn-xs signupbtn" onclick="startGame()">Start</button>
+          <button type="button" class="col-md-4 btn-xs extrabtn" onclick="buttonsReset()">Reset</button>
         </div>
         
       </div>
@@ -414,6 +422,7 @@ hr {
     .done(function (data) {
       is_start = data['status'];
       if(is_start) { match_id = data['match']; }
+      else { alert("Either one of teams not exist or match is ongoing"); }
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
       alert('Connection Error, please try again!!');
@@ -422,6 +431,7 @@ hr {
     document.getElementById("match_id").value = String(match_id);
     if(match_id > -1) {
       document.getElementById("start_game").style.display = 'none';
+      document.getElementById("end_game").style.display = 'block';
       document.getElementById("input_start_teams").style.display = 'none';
       document.getElementById("input_start_scores").style.display = 'none';
       document.getElementById("show_start_scores").style.display = 'block';
@@ -471,7 +481,7 @@ hr {
     document.getElementById("score_b_label").innerHTML = String(team_b_score);
 
     if(ongoing == false) {
-      document.getElementById("start_game").style.display = 'block';
+      document.getElementById("end_game").style.display = 'none';
       document.getElementById("show_start_scores").style.display = 'none';
       document.getElementById("input_start_scores").style.display = 'none';
       document.getElementById("result_window").style.display = 'block';
@@ -499,7 +509,7 @@ hr {
     var team_b = document.getElementById("team-b").value;
     var team_a_score;
     var team_b_score;
-
+    document.getElementById("start_game").style.display = 'none';
     var addPointUrl = "http://" + window.location.href.split('/')[2] + "\/end-game";
     var get_params = "?match-id=" + match_id;
 
@@ -524,8 +534,9 @@ hr {
     });
 
     document.getElementById("show_start_scores").style.display = 'none';
+    document.getElementById("end_game").style.display = 'none';
     document.getElementById("input_start_scores").style.display = 'none';
-    document.getElementById("start_game").style.display = 'block';
+    document.getElementById("start_game").style.display = 'none';
     if(team_a_score > team_b_score) {
       document.getElementById("game_winner").innerHTML = String(team_a) + " wins, " + String(team_b) + " loses!!!";
     } else if (team_a_score < team_b_score) {
@@ -549,6 +560,7 @@ hr {
     document.getElementById("team_b_score").innerHTML = "Add point to team";
     document.getElementById("score_b_label").innerHTML = "0";
     document.getElementById("start_game").style.display = 'block';
+    document.getElementById("end_game").style.display = 'none';
   }
 </script>
 
