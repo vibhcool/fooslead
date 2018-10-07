@@ -442,7 +442,7 @@ hr {
     var get_params = "?team-a=" + team_a + "&team-b=" + team_b;
     var is_start;
     var match_id = parseInt(document.getElementById("match_id").value);
-
+    var k = true;
     var settings = {
     "async": false,
     "crossDomain": true,
@@ -454,14 +454,14 @@ hr {
     .done(function (data) {
       is_start = data['status'];
       if(is_start) { match_id = data['match']; }
-      else { alert("Either one of teams not exist or match is ongoing"); }
+      else { alert("Either one of teams not exist or match is ongoing"); k= false;}
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
       alert('Connection Error, please try again!!');
     });
 
     document.getElementById("match_id").value = String(match_id);
-    if(match_id > -1) {
+    if(match_id > -1 && k == true) {
       document.getElementById("start_game").style.display = 'none';
       document.getElementById("end_game").style.display = 'block';
       document.getElementById("input_start_teams").style.display = 'none';
