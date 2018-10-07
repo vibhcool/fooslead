@@ -12,3 +12,6 @@ Fooslead is the Foosball Game score tracker with provided leaderboard
 
     `python manage.py runserver`
 
+## Tech Stack
+
+    Python, Django, Bootstrap
