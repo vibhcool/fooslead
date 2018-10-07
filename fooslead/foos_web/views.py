@@ -79,5 +79,9 @@ def check_team_exists(team_form):
         return None
 
 def get_leaderboard(request):
-    top_teams = leaderboard.show_ranking(limit=10)
-    return render(request, 'leaderboard.html', {'ranklist': top_teams})
+    teams = leaderboard.show_ranking()
+    return render(request, 'leaderboard.html', {'ranklist': teams, 'title': 'leaderboard', 'top_ranklist': teams[:10]})
+    
+def get_ranking(request):
+    teams = leaderboard.show_ranking()
+    return render(request, 'leaderboard.html', {'ranklist': teams, 'title': 'All teams Ranking', 'top_ranklist': teams})
