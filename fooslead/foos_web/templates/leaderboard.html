@@ -228,10 +228,8 @@ button:hover {
     background-color: #f44336;
 }
 
-/* Float cancel and signup buttons and add an equal width */
-.cancelbtn, .signupbtn {
-  float: left;
-  width: 50%;
+.extrabtn {
+    background-color: #3150d8;
 }
 
 /* Add padding to container elements */
@@ -299,7 +297,7 @@ hr {
 </style>
   </head>
   <body>
-    <div class="leaderboard">
+    <div class="leaderboard" id="leaderboard">
       <h1>
         <svg class="ico-cup">
           <use xlink:href="#cup"></use>
@@ -308,8 +306,8 @@ hr {
         Foosball Rankings
         <div>
             <div style="text-align: right;">
-              <a href="#" onclick="document.getElementById('create-team').style.display='block'" style="width:auto;">Create Team</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <a href="#" onclick="document.getElementById('play-match').style.display='block'" style="width:auto;">Play Game</a>
+              <a href="#" onclick="document.getElementById('create-team').style.display='block'; document.getElementById('leaderboard').style.display='none'" style="width:auto;">Create Team</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <a href="#" onclick="document.getElementById('play-match').style.display='block'; document.getElementById('leaderboard').style.display='none'" style="width:auto;">Play Game</a>
             </div>
         <div>
       </h1>
@@ -350,14 +348,14 @@ hr {
     </svg>
     
   <div id="create-team" class="modal" style="background:#071a47">
-    <span onclick="document.getElementById('create-team').style.display='none'" class="close" title="Close Modal">&times;</span>
+    <span onclick="document.getElementById('create-team').style.display='none'; document.getElementById('leaderboard').style.display='block'" class="close" title="Close Modal">&times;</span>
     <form class="modal-content" action="{% url 'foos_web:create-team' %}" method="POST">
       <div class="container" style="background:#c0c0c0">
         <center><b>Create team<b></center>
 			{% csrf_token %} 
-	            <input type="text" name="team" placeholder="Name of team" style="background:#c0c0c0">
-	            <input type="text" name="member_a" placeholder="Name of member 1" style="background:#c0c0c0">
-	            <input type="text" name="member_b" placeholder="Name of member 2" style="background:#c0c0c0">
+	            <input class="col-sm-4" type="text" name="team" placeholder="Name of team" style="background:#c0c0c0">
+	            <input class="col-sm-4" type="text" name="member_a" placeholder="Name of member 1" style="background:#c0c0c0">
+	            <input class="col-sm-4" type="text" name="member_b" placeholder="Name of member 2" style="background:#c0c0c0">
 
         <div class="clearfix">
           <button type="button" onclick="document.getElementById('create-team').style.display='none'" class="cancelbtn">Cancel</button>
@@ -368,7 +366,7 @@ hr {
   </div>
   
   <div id="play-match" class="modal" style="background:#071a47">
-    <span onclick="document.getElementById('play-match').style.display='none'; window.location.reload()" class="close" title="Close Modal">&times;</span>
+    <span onclick="document.getElementById('play-match').style.display='none'; document.getElementById('leaderboard').style.display='block'; window.location.reload()" class="close" title="Close Modal">&times;</span>
     
       <div class="container" style="background:#c0c0c0">
         <center><b>Play Game<b></center>
@@ -388,10 +386,10 @@ hr {
           <button type="button" class="signupbtn" id="team_a_score" onclick="addPoint(this)">Add point to team</button>          
           <button type="button" class="signupbtn" id="team_b_score" onclick="addPoint(this)">Add point to team</button>
         </div>
-        <div class="clearfix">
-          <button type="button" onclick="endGame()" class="cancelbtn">End Game</button>
-          <button type="button" id="start_game" style="display:block;" class="signupbtn" onclick="startGame()">Start</button>
-          <button type="button" class="signupbtn" onclick="buttonsReset()">Reset</button>
+        <div class="row clearfix">
+          <button type="button" onclick="endGame()" class="col-sm-4 cancelbtn">End Game</button>
+          <button type="button" id="start_game" style="display:block;" class="col-sm-4 signupbtn" onclick="startGame()">Start</button>
+          <button type="button" class="col-sm-4 extrabtn" onclick="buttonsReset()">Reset</button>
         </div>
         
       </div>
