@@ -23,7 +23,7 @@ class Leaderboard:
             except Team.DoesNotExist:
                 team_obj = None
         return team_obj
-            
+
     def add_points(self, team, match_id):
         team_obj = self.check_team(team=team)
         if match_id < len(self.matches):
@@ -98,3 +98,9 @@ class Leaderboard:
             return self.matches[match_id].__dict__
         else:
             return None
+
+    def get_all_matches(self):
+        matches_list = []
+        for match in self.matches:
+            matches_list.append(match.__dict__)
+        return matches_list

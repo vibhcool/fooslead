@@ -315,8 +315,10 @@ hr {
             <div style="text-align: right;">
               <a href="#" onclick="document.getElementById('create-team').style.display='block'; document.getElementById('leaderboard').style.display='none'" style="width:auto;">Create Team</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <a href="#" onclick="document.getElementById('play-match').style.display='block'; document.getElementById('leaderboard').style.display='none'" style="width:auto;">Play Game</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <a href="{% url 'foos_web:matches' %}" style="width:auto;">All Matches</a>
             </div>
-        <div>
+        </div>
       </h1>
       <ol>
       {% for team in top_ranklist %}

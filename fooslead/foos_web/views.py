@@ -85,3 +85,8 @@ def get_leaderboard(request):
 def get_ranking(request):
     teams = leaderboard.show_ranking()
     return render(request, 'leaderboard.html', {'ranklist': teams, 'title': 'All teams Ranking', 'top_ranklist': teams})
+
+def get_matches(request):
+    matches = leaderboard.get_all_matches()
+    print(matches)
+    return render(request, 'matches.html', { 'matches': matches })
