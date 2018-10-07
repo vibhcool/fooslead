@@ -1,3 +1,5 @@
 db.sqlite3
 fooslead/foos_web/migrations
+fooslead/foos_web/__pycache__
+fooslead/fooslead/__pycache__
 

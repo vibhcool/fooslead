@@ -29,7 +29,7 @@ class Leaderboard:
         if match_id < len(self.matches):
             self.matches[match_id].win_point(team)
             if self.matches[match_id].ongoing is False:
-                self.end_game(match_id)
+                self.end_match(match_id)
             return match_id
         return None
 

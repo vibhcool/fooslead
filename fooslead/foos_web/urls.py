@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^start-game$', views.start_game, name='start-game'),
     url(r'^end-game$', views.end_game, name='end-game'),
     url(r'^add-point$', views.add_point, name='add-point'),
+    url(r'^', views.get_leaderboard, name='main'),
 ]
 
 
