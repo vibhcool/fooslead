@@ -36,8 +36,8 @@
         min-height: 450px;
         height: 100vh;
         margin: 0;
-        background: -webkit-radial-gradient(ellipse farthest-corner at center top, #f39264 0%, #f2606f 100%);
-        background: radial-gradient(ellipse farthest-corner at center top, #f39264 0%, #f2606f 100%);
+        background: -webkit-radial-gradient(ellipse farthest-corner at center top, #3a404d 0%, #3a404d 100%);
+        background: radial-gradient(ellipse farthest-corner at center top, #3a404d 0%, #3a404d 100%);
         color: #fff;
         font-family: 'Open Sans', sans-serif;
       }
@@ -51,8 +51,8 @@
         left: 50%;
         -webkit-transform: translate(-50%, -50%);
                 transform: translate(-50%, -50%);
-        width: 100%;
-        height: 100%;
+        width: 97%;
+        height: 97%;
         background: -webkit-linear-gradient(top, #3a404d, #181c26);
         background: linear-gradient(to bottom, #3a404d, #181c26);
         border-radius: 10px;
@@ -150,61 +150,22 @@
         transition: all .3s ease-in-out;
         opacity: 0;
       }
-      .leaderboard ol li:nth-child(1) {
+      .leaderboard ol li:nth-child(odd) {
         background: #fa6855;
       }
-      .leaderboard ol li:nth-child(1)::after {
+      .leaderboard ol li:nth-child(odd)::after {
         background: #fa6855;
       }
-      .leaderboard ol li:nth-child(2) {
+      .leaderboard ol li:nth-child(even) {
         background: #e0574f;
       }
-      .leaderboard ol li:nth-child(2)::after {
+      .leaderboard ol li:nth-child(even)::after {
         background: #e0574f;
         box-shadow: 0 2px 0 rgba(0, 0, 0, 0.08);
       }
-      .leaderboard ol li:nth-child(2) mark::before, .leaderboard ol li:nth-child(2) mark::after {
+      .leaderboard ol li:nth-child(even) mark::before, .leaderboard ol li:nth-child(2) mark::after {
         border-top: 6px solid #ba4741;
         bottom: -7px;
-      }
-      .leaderboard ol li:nth-child(3) {
-        background: #d7514d;
-      }
-      .leaderboard ol li:nth-child(3)::after {
-        background: #d7514d;
-        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.11);
-      }
-      .leaderboard ol li:nth-child(3) mark::before, .leaderboard ol li:nth-child(3) mark::after {
-        border-top: 2px solid #b0433f;
-        bottom: -3px;
-      }
-      .leaderboard ol li:nth-child(4) {
-        background: #cd4b4b;
-      }
-      .leaderboard ol li:nth-child(4)::after {
-        background: #cd4b4b;
-        box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.15);
-      }
-      .leaderboard ol li:nth-child(4) mark::before, .leaderboard ol li:nth-child(4) mark::after {
-        top: -7px;
-        bottom: auto;
-        border-top: none;
-        border-bottom: 6px solid #a63d3d;
-      }
-      .leaderboard ol li:nth-child(5) {
-        background: #c24448;
-        border-radius: 0 0 10px 10px;
-      }
-      .leaderboard ol li:nth-child(5)::after {
-        background: #c24448;
-        box-shadow: 0 -2.5px 0 rgba(0, 0, 0, 0.12);
-        border-radius: 0 0 10px 10px;
-      }
-      .leaderboard ol li:nth-child(5) mark::before, .leaderboard ol li:nth-child(5) mark::after {
-        top: -9px;
-        bottom: auto;
-        border-top: none;
-        border-bottom: 8px solid #993639;
       }
       .leaderboard ol li:hover {
         z-index: 2;
@@ -348,18 +309,20 @@ hr {
         <div>
             <div style="text-align: right;">
               <a href="#" onclick="document.getElementById('create-team').style.display='block'" style="width:auto;">Create Team</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <a href="#" onclick="document.getElementById('play-match').style.display='block'" style="width:auto;">Play Game</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <a href="#">Ongoing matches</a>
+              <a href="#" onclick="document.getElementById('play-match').style.display='block'" style="width:auto;">Play Game</a>
             </div>
         <div>
       </h1>
       <ol>
+      {% for team in ranklist %}
         <li>
-          <mark>{{ team_name }}</mark>
-          <big>{{ wins }}</big>
-          <big>{{ loses }}</big>
+          <mark>{{ team.team_name }}</mark>
+          <big>wins : {{ team.wins }}</big>
+          <big>loses: {{ team.lose }}</big>
+          <input type=hidden name="member-a" value="{{ team.member_a }}">
+          <input type=hidden name="member-b" value="{{ team.member_b }}">
         </li>
-        </li>
+      {% endfor %}
       </ol>
     </div>
 
@@ -388,7 +351,7 @@ hr {
     
   <div id="create-team" class="modal" style="background:#071a47">
     <span onclick="document.getElementById('create-team').style.display='none'" class="close" title="Close Modal">&times;</span>
-    <form class="modal-content" action="{% url 'foos_web:create-team' %}">
+    <form class="modal-content" action="{% url 'foos_web:create-team' %}" method="POST">
       <div class="container" style="background:#c0c0c0">
         <center><b>Create team<b></center>
 			{% csrf_token %} 
@@ -405,32 +368,192 @@ hr {
   </div>
   
   <div id="play-match" class="modal" style="background:#071a47">
-    <span onclick="document.getElementById('play-match').style.display='none'" class="close" title="Close Modal">&times;</span>
+    <span onclick="document.getElementById('play-match').style.display='none'; window.location.reload()" class="close" title="Close Modal">&times;</span>
+    
       <div class="container" style="background:#c0c0c0">
         <center><b>Play Game<b></center>
-        
-        <div class="clearfix">
-          <input type="text" name="team_a" placeholder="Team A" style="background:#c0c0c0">
-	        <input type="text" name="team_b" placeholder="Team B" style="background:#c0c0c0">
+        <div class="clearfix" id="result_window" style="display:none;">
+          <label id="game_winner" value="" style="background:#c0c0c0">asddas</label>
+        </div>
+        <div class="clearfix" id="input_start_teams" style="display:block;">
+          <input type="text" id="team-a" placeholder="Team A" style="background:#c0c0c0">
+	        <input type="text" id="team-b" placeholder="Team B" style="background:#c0c0c0">
+	        <input type="hidden" id="match_id" value="-1">
+        </div>
+        <div class="clearfix" id="show_start_scores" style="display:none;">
+          <label id="score_a_label" value="0" style="background:#c0c0c0">0</label>
+	        <label id="score_b_label" value="0" style="background:#c0c0c0">0</label>
+        </div>
+        <div class="clearfix" id="input_start_scores" style="display:none;">
+          <button type="button" class="signupbtn" id="team_a_score" onclick="addPoint(this)">Add point to team</button>          
+          <button type="button" class="signupbtn" id="team_b_score" onclick="addPoint(this)">Add point to team</button>
         </div>
         <div class="clearfix">
-          <label name="team_a_label" value="TEAM A" style="background:#c0c0c0"/>TEAM A</label>
-	        <label name="team_b_label" value="TEAM B" style="background:#c0c0c0"/>TEAM B</label>
-        </div>
-        <div class="clearfix">
-          <label name="score_a_label" value="0" style="background:#c0c0c0">0</label>
-	        <label name="score_b_label" value="0" style="background:#c0c0c0">0</label>
-        </div>
-        <div class="clearfix">
-          <button type="button" class="signupbtn" onclick="return add_point('a')">Add point to team {{ team_a }}</button>          <button type="button" class="signupbtn" onclick="return add_point('b')">Add point to team {{ team_b }}</button>
-        </div>
-        <div class="clearfix">
-          <button type="button" onclick="document.getElementById('play-match').style.display='none'" class="cancelbtn">Cancel</button>
-          <button type="submit" class="signupbtn" onclick="return startGame()">Start</button>
+          <button type="button" onclick="endGame()" class="cancelbtn">End Game</button>
+          <button type="button" id="start_game" style="display:block;" class="signupbtn" onclick="startGame()">Start</button>
+          <button type="button" class="signupbtn" onclick="buttonsReset()">Reset</button>
         </div>
         
       </div>
   </div>
+<script>
+  function startGame() {  
+    var team_a = document.getElementById("team-a").value;
+    var team_b = document.getElementById("team-b").value;
+    var startGameUrl = "http://" + window.location.href.split('/')[2] + "\/start-game";
+    var get_params = "?team-a=" + team_a + "&team-b=" + team_b;
+    var is_start;
+    var match_id = parseInt(document.getElementById("match_id").value);
+
+    var settings = {
+    "async": false,
+    "crossDomain": true,
+    "url": startGameUrl + get_params,
+    "method": "GET",
+    };
+
+    $.ajax(settings)
+    .done(function (data) {
+      is_start = data['status'];
+      if(is_start) { match_id = data['match']; }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+      alert('Connection Error, please try again!!');
+    });
+
+    document.getElementById("match_id").value = String(match_id);
+    if(match_id > -1) {
+      document.getElementById("start_game").style.display = 'none';
+      document.getElementById("input_start_teams").style.display = 'none';
+      document.getElementById("input_start_scores").style.display = 'none';
+      document.getElementById("show_start_scores").style.display = 'block';
+      document.getElementById("team_a_score").innerHTML += " " + String(team_a);
+      document.getElementById("team_a_score").value = team_a;
+      document.getElementById("team_b_score").innerHTML += " " + String(team_b);
+      document.getElementById("team_b_score").value = team_b;
+      document.getElementById("input_start_scores").style.display = 'block';
+      
+    }
+
+  }
+
+
+  function addPoint(element) {
+    var addPointUrl = "http://" + window.location.href.split('/')[2] + "\/add-point";
+    var match_id = document.getElementById("match_id").value;
+    var team = element.value;
+    var get_params = "?team=" + team + "&match=" + match_id;
+    var team_a_score;
+    var team_b_score;
+    var ongoing;
+    var team_a = document.getElementById("team-a").value;
+    var team_b = document.getElementById("team-b").value;
+    
+    var settings = {
+      "async": false,
+      "crossDomain": true,
+      "url": addPointUrl + get_params,
+      "method": "GET",
+    };
+
+    $.ajax(settings)
+    .done(function (data) {
+      is_start = data['status'];
+      if(is_start) {
+        team_a_score = data['match']['team_a_score'];
+        team_b_score = data['match']['team_b_score'];
+        ongoing = data['match']['ongoing'];
+      }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+      alert('Connection Error, please try again!!');
+    });
+
+    document.getElementById("score_a_label").innerHTML = String(team_a_score);
+    document.getElementById("score_b_label").innerHTML = String(team_b_score);
+
+    if(ongoing == false) {
+      document.getElementById("start_game").style.display = 'block';
+      document.getElementById("show_start_scores").style.display = 'none';
+      document.getElementById("input_start_scores").style.display = 'none';
+      document.getElementById("result_window").style.display = 'block';
+      document.getElementById("match_id").value = "-1";
+      document.getElementById("team-a").value = "";
+      document.getElementById("team-b").value = "";
+      document.getElementById("team_a_score").innerHTML = "Add point to team";
+      document.getElementById("score_a_label").innerHTML = "0";
+      document.getElementById("team_b_score").innerHTML = "Add point to team";
+      document.getElementById("score_b_label").innerHTML = "0";
+      if(team_a_score > team_b_score) {
+        document.getElementById("game_winner").innerHTML = String(team_a) + " wins, " + String(team_b) + " loses!!!";
+      } else if (team_a_score < team_b_score) {
+        document.getElementById("game_winner").innerHTML = team_b + " wins, " + team_a + " loses!!!";
+      } else {
+        document.getElementById("game_winner").innerHTML = "It's a tie!!!";
+      }
+      document.getElementById("result_window").style.display = 'block';
+    }
+  }
+  
+  function endGame() {
+    var match_id = document.getElementById("match_id").value;
+    var team_a = document.getElementById("team-a").value;
+    var team_b = document.getElementById("team-b").value;
+    var team_a_score;
+    var team_b_score;
+
+    var addPointUrl = "http://" + window.location.href.split('/')[2] + "\/end-game";
+    var get_params = "?match-id=" + match_id;
+
+    var settings = {
+      "async": false,
+      "crossDomain": true,
+      "url": addPointUrl + get_params,
+      "method": "GET",
+    };
+
+    $.ajax(settings)
+    .done(function (data) {
+      is_start = data['status'];
+      if(is_start) {
+        team_a_score = data['match']['team_a_score'];
+        team_b_score = data['match']['team_b_score'];
+        ongoing = data['match']['ongoing'];
+      }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+      alert('Connection Error, please try again!!');
+    });
+
+    document.getElementById("show_start_scores").style.display = 'none';
+    document.getElementById("input_start_scores").style.display = 'none';
+    document.getElementById("start_game").style.display = 'block';
+    if(team_a_score > team_b_score) {
+      document.getElementById("game_winner").innerHTML = String(team_a) + " wins, " + String(team_b) + " loses!!!";
+    } else if (team_a_score < team_b_score) {
+      document.getElementById("game_winner").innerHTML = team_b + " wins, " + team_a + " loses!!!";
+    } else {
+      document.getElementById("game_winner").innerHTML = "It's a tie!!!";
+    }
+    document.getElementById("result_window").style.display = 'block';
+  }
+  
+  function buttonsReset() {
+    document.getElementById("result_window").style.display = 'none';
+    document.getElementById("show_start_scores").style.display = 'none';
+    document.getElementById("input_start_scores").style.display = 'none';
+    document.getElementById("input_start_teams").style.display = 'block';
+    document.getElementById("match_id").value = "-1";
+    document.getElementById("team-a").value = "";
+    document.getElementById("team-b").value = "";
+    document.getElementById("team_a_score").innerHTML = "Add point to team";
+    document.getElementById("score_a_label").innerHTML = "0";
+    document.getElementById("team_b_score").innerHTML = "Add point to team";
+    document.getElementById("score_b_label").innerHTML = "0";
+    document.getElementById("start_game").style.display = 'block';
+  }
+</script>
+
 
   <body>
 </html>
