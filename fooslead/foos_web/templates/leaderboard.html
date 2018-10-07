@@ -319,7 +319,7 @@ hr {
         <div>
       </h1>
       <ol>
-      {% for team in ranklist %}
+      {% for team in top_ranklist %}
         <li>
           <mark>{{ team.team_name }}</mark>
           <big>wins : {{ team.wins }}</big>
@@ -381,9 +381,37 @@ hr {
           <label id="game_winner" value="" style="background:#c0c0c0">asddas</label>
         </div>
         <div class="clearfix" id="input_start_teams" style="display:block;">
-          <input type="text" id="team-a" placeholder="Team A" style="background:#c0c0c0">
-	        <input type="text" id="team-b" placeholder="Team B" style="background:#c0c0c0">
-	        <input type="hidden" id="match_id" value="-1">
+          <div class="btn-group">
+            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+              <label id="team-a"> Select a Team A </label>
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              {% for team in ranklist %}
+              <li class="dropdown-item">
+                <a href="#" onclick="document.getElementById('team-a').innerHTML=this.innerHTML;">
+                  {{ team.team_name }}
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+	      <div class="btn-group">
+            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+              <label id="team-b"> Select a Team b </label>
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              {% for team in ranklist %}
+              <li class="dropdown-item">
+                <a href="#" onclick="document.getElementById('team-b').innerHTML=this.innerHTML;">
+                  {{ team.team_name }}
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+	      <input type="hidden" id="match_id" value="-1">
         </div>
         <div class="clearfix" id="show_start_scores" style="display:none;">
           <center>
@@ -406,8 +434,8 @@ hr {
   </div>
 <script>
   function startGame() {  
-    var team_a = document.getElementById("team-a").value;
-    var team_b = document.getElementById("team-b").value;
+    var team_a = document.getElementById("team-a").innerHTML.trim();
+    var team_b = document.getElementById("team-b").innerHTML.trim();
     var startGameUrl = "http://" + window.location.href.split('/')[2] + "\/start-game";
     var get_params = "?team-a=" + team_a + "&team-b=" + team_b;
     var is_start;
@@ -456,8 +484,8 @@ hr {
     var team_a_score;
     var team_b_score;
     var ongoing;
-    var team_a = document.getElementById("team-a").value;
-    var team_b = document.getElementById("team-b").value;
+    var team_a = document.getElementById("team-a").innerHTML.trim();
+    var team_b = document.getElementById("team-b").innerHTML.trim();
     
     var settings = {
       "async": false,
@@ -488,8 +516,8 @@ hr {
       document.getElementById("input_start_scores").style.display = 'none';
       document.getElementById("result_window").style.display = 'block';
       document.getElementById("match_id").value = "-1";
-      document.getElementById("team-a").value = "";
-      document.getElementById("team-b").value = "";
+      document.getElementById("team-a").innerHTML = "Select Team A";
+      document.getElementById("team-b").innerHTML = "Select Team B";
       document.getElementById("team_a_score").innerHTML = "Add point to team";
       document.getElementById("score_a_label").innerHTML = "0";
       document.getElementById("team_b_score").innerHTML = "Add point to team";
@@ -507,8 +535,8 @@ hr {
   
   function endGame() {
     var match_id = document.getElementById("match_id").value;
-    var team_a = document.getElementById("team-a").value;
-    var team_b = document.getElementById("team-b").value;
+    var team_a = document.getElementById("team-a").innerHTML.trim();
+    var team_b = document.getElementById("team-b").innerHTML.trim();
     var team_a_score;
     var team_b_score;
     document.getElementById("start_game").style.display = 'none';
@@ -555,8 +583,8 @@ hr {
     document.getElementById("input_start_scores").style.display = 'none';
     document.getElementById("input_start_teams").style.display = 'block';
     document.getElementById("match_id").value = "-1";
-    document.getElementById("team-a").value = "";
-    document.getElementById("team-b").value = "";
+    document.getElementById("team-a").innerHTML = "Select Team A";
+    document.getElementById("team-b").innerHTML = "Select Team B";
     document.getElementById("team_a_score").innerHTML = "Add point to team";
     document.getElementById("score_a_label").innerHTML = "0";
     document.getElementById("team_b_score").innerHTML = "Add point to team";
